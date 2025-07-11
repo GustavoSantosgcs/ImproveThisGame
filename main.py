@@ -1,27 +1,88 @@
-from personagem import Personagem
+from ClassesChar.mago import Mago
+from ClassesChar.arqueiro import Arqueiro
+from ClassesChar.ninja import Ninja
+from ClassesChar.guerreiro import Guerreiro
 from vilao import Vilao
+from batalha import Batalha
+from utils import Utils as ut
 
-def main():
-    # Criando personagens e vilões
-    heroi = Personagem('Link', 30, 100)
-    npc = Personagem('Zelda', 28, 80)
-    vilao = Vilao('Ganon', 45, 120, 'Alta')
 
-    # Mostrando personagens
-    print(heroi)
-    print(npc)
-    print(vilao)
+class Jogo:
+    """
+    Gerencia ciclo de criação e batalha do jogo.
+    """
+    def __init__(self) -> None:
+        self.heroi = None
+        self.vilao = None
 
-    # Vilão ataca o herói
-    vilao.ataque(heroi)
 
-    # Melhorando a vida do herói
-    heroi.upgrade_vida(20)
-    print(f'{heroi.nome} após upgrade de vida: {heroi.vida}')
+    def criarHeroi(self) -> None:
+        """
+        Exibe menu de classes e cria instância de Heroi usando match.
+        """
+        ut.limparTela()
+        print("=== Criação de Herói ===")
+        nome = ut.naoVazio("Digite o nome do seu herói: ")
+        idade = int(input("Digite a idade do seu herói: ").strip())        
 
-    # Mudando nome do NPC
-    npc.update_nome('Princesa Zelda')
-    print(f'Nome atualizado: {npc.nome}')
+        while True:
+            print("1) Mago\n2) Arqueiro\n3) Ninja\n4) Guerreiro")
+            escolha = ut.naoVazio("Escolha sua classe: ")
+            match escolha:
+                case "1":
+                    self.heroi = Mago(nome, idade)
+                    break
+                case "2":
+                    self.heroi = Arqueiro(nome, idade)
+                    break
+                case "3":
+                    self.heroi = Ninja(nome, idade)
+                    break
+                case "4":
+                    self.heroi = Guerreiro(nome, idade)
+                    break
+                case _:
+                    print("\nOpção inválida. Você precisa escolher uma classe\n.")
+        
+                   
+    def criarVilao(self) -> None:
+        """
+        Cria um vilão de exemplo para a batalha.
+        """
+        self.vilao = Vilao(
+            nome="Goblin",
+            idade=30,
+            vida=80,
+            maldade="Média",
+            ataque=25,
+            defesa=5
+        )
+
+    def executar(self) -> None:
+        """
+        Inicia o fluxo de jogo: criação e batalha.
+        """
+        while True:
+            self.criarHeroi()
+            self.criarVilao()
+            batalha = Batalha(self.heroi, self.vilao)
+            batalha.iniciar_batalha()
+            
+            print("Deseja uma nova rodada?")
+            opcao = ut.naoVazio("Digite: [S] ou [N] ")
+            match opcao.lower():
+                case 's':
+                    input("Entendido! Pressione Enter para continuar...")
+                    ut.limparTela()
+                
+                case 'n':
+                    print("Ok! Vamos encerrar por aqui... até logo!")
+                    break
+                
+                case _:
+                    print("Não entendi sua opção\n")
+
 
 if __name__ == "__main__":
-    main()
+    jogo = Jogo()
+    jogo.executar()

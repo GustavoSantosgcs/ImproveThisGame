@@ -1,35 +1,57 @@
 class Personagem:
     """
-    A classe Personagem representa um personagem genérico em um jogo.
+    Representa um personagem genérico no jogo, com atributos de vida,
+    ataque e defesa, e métodos para curar e receber dano.
     """
-    def __init__(self, nome, idade, vida):
+
+    DEFAULT_ATAQUE = 10
+    DEFAULT_DEFESA = 5
+
+
+    def __init__(self, nome: str, idade: int, vida: int):
+        """ Inicializa o personagem. """
         self.nome = nome
         self.idade = idade
         self.vida = vida
-
-    def upgrade_vida(self, incremento=10):
-        """
-        Aumenta a vida do personagem. O valor padrão de incremento é 10.
-        """
-        self.vida += incremento
-        print(f'Vida de {self.nome} após upgrade: {self.vida}')
+        self.ataque = Personagem.DEFAULT_ATAQUE
+        self.defesa = Personagem.DEFAULT_DEFESA
 
 
-    def downgrade_vida(self):
+    def curar(self, quantidade: int = 10):
         """
-        Reduz a vida do personagem, garantindo que não fique negativa.
-        """
-        if self.vida > 15:
-            self.vida -= 15
-        else:
-            self.vida = 0
-        print(f'Vida de {self.nome} após downgrade: {self.vida}')
+        Restaura 'quantidade' de pontos de vida.
 
-    def update_nome(self, nome_editado):
+        return: 
+            vida atualizada
+        """
+        self.vida += quantidade
+        print(f"{self.nome} recuperou {quantidade} de vida. Vida atual: {self.vida}")
+        return self.vida
+
+
+    def receberDano(self, dano: int):
+        """
+        Aplica dano líquido descontando a defesa, sem permitir vida negativa.
+
+        return:
+            vida atualizada
+        """
+        dano_liquido = max(dano - self.defesa, 0)
+        self.vida = max(self.vida - dano_liquido, 0)
+        print(f"{self.nome} recebeu {dano_liquido} de dano (defesa: {self.defesa}). Vida atual: {self.vida}")
+        return self.vida
+
+
+    def alterarNome(self, novo_nome: str):
         """
         Atualiza o nome do personagem.
         """
-        self.nome = nome_editado
+        self.nome = novo_nome
+        print(f"Nome atualizado para {self.nome}")
 
-    def __str__(self):
-        return f'Personagem: {self.nome}, Idade: {self.idade}, Vida: {self.vida}'
+
+    def __str__(self) -> str:
+        return (
+            f"{self.__class__.__name__}: {self.nome} | Idade: {self.idade} | "
+            f"Vida: {self.vida} | Ataque: {self.ataque} | Defesa: {self.defesa}"
+        )
