@@ -11,12 +11,12 @@ class Jogo:
     """
     Gerencia ciclo de criação e batalha do jogo.
     """
-    def __init__(self) -> None:
+    def __init__(self):
         self.heroi = None
         self.vilao = None
 
 
-    def criarHeroi(self) -> None:
+    def criarHeroi(self):
         """
         Exibe menu de classes e cria instância de Heroi usando match.
         """
@@ -45,9 +45,9 @@ class Jogo:
                     print("\nOpção inválida. Você precisa escolher uma classe\n.")
         
                    
-    def criarVilao(self) -> None:
+    def criarVilao(self):
         """
-        Cria um vilão de exemplo para a batalha.
+        Cria um vilão para a batalha.
         """
         self.vilao = Vilao(
             nome="Goblin",
@@ -58,7 +58,7 @@ class Jogo:
             defesa=5
         )
 
-    def executar(self) -> None:
+    def executar(self):
         """
         Inicia o fluxo de jogo: criação e batalha.
         """
