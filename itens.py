@@ -1,3 +1,5 @@
+from utils import Utils
+
 class Item:
     """
     Representa um item genérico que pode ser usado por heróis.
@@ -15,7 +17,7 @@ class Item:
         raise NotImplementedError(f"{self.__class__.__name__} não implementou usar()")
 
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.nome}: {self.descricao}"
 
 
@@ -30,6 +32,7 @@ class PocaoVida(Item):
 
     def usar(self, heroi):
         heroi.usarPocaoVida(self.cura)
+        return True
 
 
 class PocaoMana(Item):
@@ -43,6 +46,7 @@ class PocaoMana(Item):
 
     def usar(self, heroi):
         heroi.usarPocaoMana(self.recarga)
+        return True
 
 
 class Voucher(Item):
@@ -54,6 +58,7 @@ class Voucher(Item):
 
 
     def usar(self, heroi):
-        # Você pode expandir isso para efeitos especiais
-        print(f"{heroi.nome} usou {self.nome}! Nada acontece além da comemoração.")
+        Utils.console.print(
+            f"[green]{heroi.nome} usou {self.nome}! Nada acontece além da comemoração.[/green]"
+        )
         return True

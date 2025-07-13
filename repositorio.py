@@ -2,6 +2,10 @@ import os
 import json
 from heroi import Heroi
 from vilao import Vilao
+from ClassesChar.mago      import Mago
+from ClassesChar.arqueiro  import Arqueiro
+from ClassesChar.ninja     import Ninja
+from ClassesChar.guerreiro import Guerreiro
 
 # Diretório e arquivos de repositório
 DIR = 'repositorio'
@@ -11,54 +15,57 @@ ARQUIVO_VILOES = os.path.join(DIR, 'viloes.json')
 # Garante que o diretório exista
 os.makedirs(DIR, exist_ok=True)
 
-
-def salvarHerois(herois: list[Heroi]):
-    """
-    Salva a lista de heróis em JSON, incluindo inventário e histórico.
-
-    Parâmetros:
-        herois: lista de instâncias de Heroi
-    """
-    data = [h.toDict() for h in herois]
-    with open(ARQUIVO_HEROIS, 'w', encoding='utf-8') as f:
-        json.dump(data, f, indent=4, ensure_ascii=False)
-
+# Mapeia o nome da classe no JSON para a classe Python
+CLASS_MAP = {
+    "Mago":      Mago,
+    "Arqueiro":  Arqueiro,
+    "Ninja":     Ninja,
+    "Guerreiro": Guerreiro
+}
 
 def carregarHerois() -> list[Heroi]:
     """
-    Carrega a lista de heróis do JSON.
-
-    Retorna:
-        Lista de instâncias de Heroi (pode ser vazia).
+    Carrega a lista de heróis do JSON, instanciando a subclasse correta.
     """
-    if not os.path.exists(ARQUIVO_HEROIS):
+    try:
+        with open(ARQUIVO_HEROIS, encoding="utf-8") as f:
+            data = json.load(f)
+    except FileNotFoundError:
         return []
-    with open(ARQUIVO_HEROIS, 'r', encoding='utf-8') as f:
-        data = json.load(f)
-    return [Heroi.fromDict(item) for item in data]
+
+    herois: list[Heroi] = []
+    for entry in data:
+        cls_name = entry.get("classe", "")
+        cls = CLASS_MAP.get(cls_name, Heroi)
+        heroi = cls.fromDict(entry)
+        herois.append(heroi)
+    return herois
 
 
-def salvarViloes(viloes: list[Vilao]) -> None:
+def salvarHerois(herois: list[Heroi]) -> None:
     """
-    Salva a lista de vilões em JSON.
-
-    Parâmetros:
-        viloes: lista de instâncias de Vilao
+    Salva a lista de heróis no JSON.
     """
-    data = [v.toDict() for v in viloes]
-    with open(ARQUIVO_VILOES, 'w', encoding='utf-8') as f:
-        json.dump(data, f, indent=4, ensure_ascii=False)
+    to_save = [h.toDict() for h in herois]
+    with open(ARQUIVO_HEROIS, "w", encoding="utf-8") as f:
+        json.dump(to_save, f, ensure_ascii=False, indent=2)
 
 
 def carregarViloes() -> list[Vilao]:
     """
     Carrega a lista de vilões do JSON.
-
-    Retorna:
-        Lista de instâncias de Vilao (pode ser vazia).
     """
     if not os.path.exists(ARQUIVO_VILOES):
         return []
-    with open(ARQUIVO_VILOES, 'r', encoding='utf-8') as f:
+    with open(ARQUIVO_VILOES, "r", encoding="utf-8") as f:
         data = json.load(f)
-    return [Vilao.fromDict(item) for item in data]
+    return [Vilao.fromDict(entry) for entry in data]
+
+
+def salvarViloes(viloes: list[Vilao]) -> None:
+    """
+    Salva a lista de vilões em JSON.
+    """
+    to_save = [v.toDict() for v in viloes]
+    with open(ARQUIVO_VILOES, "w", encoding="utf-8") as f:
+        json.dump(to_save, f, ensure_ascii=False, indent=2)

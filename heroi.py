@@ -1,5 +1,6 @@
 from personagem import Personagem
 from itens import Item, PocaoVida, PocaoMana, Voucher
+from utils import Utils
 
 
 class Heroi(Personagem):
@@ -7,8 +8,10 @@ class Heroi(Personagem):
     Representa as características de um herói no jogo.
     Herda da classe Personagem.
     """
+
     MAX_VIDA: int = 120
     MAX_MANA: int = 120
+
 
     def __init__(self, nome: str, idade: int, vida: int, mana: int):
         """
@@ -21,7 +24,7 @@ class Heroi(Personagem):
             mana: pontos de mana iniciais
         """
         super().__init__(nome, idade, vida)
-        self.mana: int = mana
+        self.mana = mana
         self.inventario: dict[str, int] = {}
         self.historico: list[str] = []
 
@@ -34,102 +37,145 @@ class Heroi(Personagem):
         raise NotImplementedError(
             f"{self.__class__.__name__} precisa implementar descricao()"
         )
-        
-        
+
+
     def ataqueBasico(self, alvo):
         """
-        Herói desferindo ataque básico utilizando seu atributo de ataque.
+        Executa ataque básico contra o alvo.
 
         Parâmetros:
-            alvo: instância de Personagem a receber o dano
+            alvo: instância de Personagem que receberá o dano
         """
-        print(f"{self.nome} atacou {alvo.nome}! (básico)")
+        Utils.console.print(f"[green]{self.nome} atacou {alvo.nome}! (básico)[/green]")
         alvo.receberDano(self.ataque)
 
 
     def ataqueEspecial(self, alvo):
         """
-        Chama o ataque especial da subclasse, se existir.
-        Caso contrário, faz um ataque básico.
+        Chama o ataque especial da subclasse ou, se não existir,
+        faz um ataque básico.
         """
-        print(f"{self.nome} não possui ataque especial! Usando ataque básico.")
+        Utils.console.print(
+            f"[yellow]{self.nome} não possui ataque especial! Usando básico[/yellow]"
+        )
         self.ataqueBasico(alvo)
-        
-        
+
+
     def usarPocaoVida(self, cura: int = 30):
-        """Soma o parâmetro cura ao total de pontos de vida, sem ultrapassar MAX_VIDA."""
+        """
+        Usa uma poção de vida, sem ultrapassar o máximo.
+
+        Parâmetros:
+            cura: pontos de vida restaurados (padrão 30)
+        """
         if self.vida < Heroi.MAX_VIDA:
             self.vida = min(self.vida + cura, Heroi.MAX_VIDA)
-            print(f"{self.nome} usou poção de vida! Vida: {self.vida}, Mana: {self.mana}")
+            Utils.console.print(
+                f"[blue]{self.nome} usou poção de vida! Vida: {self.vida}, Mana: {self.mana}[/blue]"
+            )
         else:
-            print("Vida já está cheia! Não é possível usar poção.")
+            Utils.console.print("[red]Vida já está cheia![/red]")
 
 
     def usarPocaoMana(self, recarga: int = 30):
-        """Soma o parâmetro recarga ao total de pontos de mana, sem ultrapassar MAX_MANA."""
+        """
+        Usa uma poção de mana, sem ultrapassar o máximo.
+
+        Parâmetros:
+            recarga: pontos de mana restaurados (padrão 30)
+        """
         if self.mana < Heroi.MAX_MANA:
             self.mana = min(self.mana + recarga, Heroi.MAX_MANA)
-            print(f"{self.nome} usou poção de mana! Vida: {self.vida}, Mana: {self.mana}")
+            Utils.console.print(
+                f"[blue]{self.nome} usou poção de mana! Vida: {self.vida}, Mana: {self.mana}[/blue]"
+            )
         else:
-            print("Mana já está cheia! Não é possível usar poção.")
+            Utils.console.print("[red]Mana já está cheia![/red]")
 
 
-    def adicionarItem(self, item: Item):
-        """Acrescenta um item ao inventário (contagem)."""
-        self.inventario[item.nome] = self.inventario.get(item.nome, 0) + 1
-        print(f"{self.nome} recebeu 1x {item.nome}.")
+    def addItem(self, item, qtd: int = 1):
+        """
+        Alias compatível com subclasses antigas.
+        item pode ser instância de Item ou nome de item.
+        qtd: quantidade a adicionar.
+        """
+        from itens import PocaoVida, PocaoMana, Voucher
+        # resolve instância
+        if isinstance(item, str):
+            mapping = {
+                "Poção de Vida": PocaoVida,
+                "Poção de Mana": PocaoMana,
+                "Voucher": Voucher,
+            }
+            cls = mapping.get(item)
+            if not cls:
+                return
+            item_obj = cls()
+        else:
+            item_obj = item
+
+        for _ in range(qtd):
+            self.inventario[item_obj.nome] = self.inventario.get(item_obj.nome, 0) + 1
+        Utils.console.print(f"[green]{self.nome} recebeu {qtd}x {item_obj.nome}[/green]")
 
 
     def usarItem(self, nome_item: str):
-        """Usa uma unidade do item, se existir, aplicando seu efeito."""
+        """
+        Usa uma unidade do item, aplicando seu efeito.
+        """
         qtd = self.inventario.get(nome_item, 0)
         if qtd < 1:
-            print(f"{self.nome} não tem {nome_item} no inventário.")
+            Utils.console.print(f"[red]{self.nome} não tem {nome_item}[/red]")
             return
-        # criar instância temporária para chamar usar()
+
         if nome_item == "Poção de Vida":
             item = PocaoVida()
         elif nome_item == "Poção de Mana":
             item = PocaoMana()
         else:
-            print("Item desconhecido.")
+            Utils.console.print("[red]Item desconhecido.[/red]")
             return
 
         item.usar(self)
         self.inventario[nome_item] -= 1
         if self.inventario[nome_item] == 0:
             del self.inventario[nome_item]
-        print(f"{self.nome} agora tem {self.inventario.get(nome_item,0)}x {nome_item}.")
+        Utils.console.print(
+            f"[yellow]{self.nome} agora tem {self.inventario.get(nome_item,0)}x {nome_item}[/yellow]"
+        )
 
 
     def salvarRefem(self, nome_refem: str):
         """
-        Simula salvar um refém e concede um voucher ao herói.
+        Simula salvar um refém e concede um voucher.
 
         Parâmetros:
             nome_refem: nome do refém resgatado
         """
-        print(f"{self.nome} salvou o refém {nome_refem}! Parabéns.")
+        Utils.console.print(
+            f"[green]{self.nome} salvou o refém {nome_refem}![/green]"
+        )
         voucher = Voucher()
-        self.adicionarItem(voucher)
-        
+        self.addItem(voucher)
+
 
     def dialogar(self, fala: str):
         """
-        Permite ao herói falar algo no meio da aventura.
-
-        Parâmetros:
-            fala: texto que o herói vai dizer
+        Exibe uma fala do herói com efeito de máquina de escrever.
         """
-        print(f'{self.nome} diz: "{fala}"')
+        texto = f"{self.nome} diz: “{fala}”"
+        Utils.escrever(texto)
+        self.historico.append(f"{self.nome} disse: {fala}")
 
 
-    def toDict(self) -> dict:
+    def toDict(self):
         """
-        Serializa o herói para um dicionário pronto para JSON.
+        Serializa o herói para um dicionário JSON,
+        incluindo a classe (Mago, Ninja, etc.).
         """
-        return {
+        base = {
             "nome": self.nome,
+            "classe": self.__class__.__name__,   
             "idade": self.idade,
             "vida": self.vida,
             "mana": self.mana,
@@ -138,21 +184,33 @@ class Heroi(Personagem):
             "inventario": self.inventario,
             "historico": self.historico,
         }
+        return base
 
 
     @classmethod
     def fromDict(cls, data: dict) -> "Heroi":
         """
-        Desserializa um dicionário em uma instância de Heroi.
+        Desserializa um dicionário em instância de Heroi ou de sua subclasse.
         """
-        heroi = cls(
-            nome=data["nome"],
-            idade=data["idade"],
-            vida=data["vida"],
-            mana=data["mana"],
-        )
-        heroi.ataque = data.get("ataque", heroi.ataque)
-        heroi.defesa = data.get("defesa", heroi.defesa)
+        nome = data["nome"]
+        idade = data["idade"]
+        # Se for exatamente Heroi, passe vida+mana no construtor
+        if cls is Heroi:
+            heroi = cls(
+                nome=nome,
+                idade=idade,
+                vida=data.get("vida", Heroi.MAX_VIDA),
+                mana=data.get("mana", Heroi.MAX_MANA)
+            )
+        else:
+            # Subclasse recebe só nome+idade no __init__
+            heroi = cls(nome, idade)
+            heroi.vida = data.get("vida", heroi.vida)
+            heroi.mana = data.get("mana", heroi.mana)
+
+        # Atributos comuns
+        heroi.ataque = data.get("ataque", getattr(heroi, "ataque", 0))
+        heroi.defesa = data.get("defesa", getattr(heroi, "defesa", 0))
         heroi.inventario = data.get("inventario", {})
         heroi.historico = data.get("historico", [])
         return heroi

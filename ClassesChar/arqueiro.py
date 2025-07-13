@@ -1,5 +1,5 @@
 from heroi import Heroi
-
+from utils import Utils
 
 class Arqueiro(Heroi):
     """
@@ -9,27 +9,24 @@ class Arqueiro(Heroi):
       - Flechas: 10
       - Habilidade especial: flechadaDeFogo()
     """
-    DEFAULT_VIDA: int = 85
-    DEFAULT_MANA: int = 110
-    CUSTO_MANA_FLECHADA: int = 20
-    DANO_FLECHADA: int = 45
+    DEFAULT_VIDA = 85
+    DEFAULT_MANA = 110
+    CUSTO_MANA_FLECHADA = 20
+    DANO_FLECHADA = 45
 
 
     def __init__(self, nome: str, idade: int):
         """
         Cria um Arqueiro com valores padrão.
-
-        Parâmetros:
-            nome: nome do arqueiro
-            idade: idade em anos
         """
         super().__init__(nome, idade, vida=Arqueiro.DEFAULT_VIDA, mana=Arqueiro.DEFAULT_MANA)
-        self.flechas: int = 10
+        self.flechas = 10
+
         # Kit inicial de itens
-        self.addItem("Poção de Vida", 2)
+        self.addItem("Poção de Vida", 3)
         self.addItem("Poção de Mana", 1)
 
-   
+
     def descricao(self):
         """
         Descrição do Arqueiro, incluindo kit inicial de itens.
@@ -44,41 +41,43 @@ class Arqueiro(Heroi):
             "Ataque especial: Flechada de Fogo (dano 45, custo 20 de mana e 1 flecha)."
         )
 
-   
-   
+
     def flechadaDeFogo(self, alvo):
         """
         Dispara uma flecha no alvo:
          - consome 1 flecha
          - consome CUSTO_MANA_FLECHADA de mana
          - causa DANO_FLECHADA de dano
-
-        Parâmetros:
-            alvo: instância de Personagem a receber o dano
         """
-        faltou: list[str] = []
+        console = Utils.console
+        faltou = []
         if self.mana < Arqueiro.CUSTO_MANA_FLECHADA:
             faltou.append("mana")
         if self.flechas < 1:
             faltou.append("flechas")
 
         if faltou:
-            print(f"{self.nome} não tem recursos suficientes ({' e '.join(faltou)}) para atacar.")
+            console.print(f"[red]{self.nome} não tem recursos ({' e '.join(faltou)})![/red]")
             return
 
         self.mana -= Arqueiro.CUSTO_MANA_FLECHADA
         self.flechas -= 1
-        alvo.receberDano(Arqueiro.DANO_FLECHADA)
+        dano = Arqueiro.DANO_FLECHADA
+        alvo.receberDano(dano)
 
-        print(f"{self.nome} lançou flechadaDeFogo em {alvo.nome}, causando {Arqueiro.DANO_FLECHADA} de dano!")
-        print(f"Mana restante: {self.mana} | Flechas restantes: {self.flechas}")
+        console.print(
+            f"[magenta]{self.nome} lançou Flechada de Fogo em {alvo.nome}, causando {dano} de dano![/magenta]"
+        )
+        console.print(f"Mana restante: {self.mana} | Flechas restantes: {self.flechas}")
 
 
     def ataqueEspecial(self, alvo):
         """
-        Executa o ataque especial do arqueiro (flechadaDeFogo).
-
-        Parâmetros:
-            alvo: instância de Personagem a receber o dano
+        Override do Heroi: executa flechadaDeFogo.
         """
         self.flechadaDeFogo(alvo)
+
+
+    def __str__(self):
+        base = super().__str__()
+        return base + f" | Flechas: {self.flechas}"

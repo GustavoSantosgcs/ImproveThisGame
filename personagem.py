@@ -4,8 +4,8 @@ class Personagem:
     ataque e defesa, e métodos para curar e receber dano.
     """
 
-    DEFAULT_ATAQUE: int = 12
-    DEFAULT_DEFESA: int = 6
+    DEFAULT_ATAQUE: int = 20
+    DEFAULT_DEFESA: int = 10
 
 
     def __init__(

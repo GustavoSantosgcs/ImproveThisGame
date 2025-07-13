@@ -1,5 +1,5 @@
 from heroi import Heroi
-
+from utils import Utils
 
 class Mago(Heroi):
     """
@@ -7,23 +7,19 @@ class Mago(Heroi):
       - Menos vida, mais mana
       - Habilidade especial: bolaDeFogo()
     """
-    MAX_VIDA: int = 80
-    MAX_MANA: int = 140
-    CUSTO_BOLA_DE_FOGO: int = 25
-    DANO_BOLA_DE_FOGO: int = 45
+    MAX_VIDA = 80
+    MAX_MANA = 140
+    CUSTO_BOLA_DE_FOGO = 25
+    DANO_BOLA_DE_FOGO = 45
 
 
     def __init__(self, nome: str, idade: int):
         """
         Cria um Mago com valores padrão.
-
-        Parâmetros:
-            nome: nome do mago
-            idade: idade em anos
         """
         super().__init__(nome, idade, vida=Mago.MAX_VIDA, mana=Mago.MAX_MANA)
         # Kit inicial de itens
-        self.addItem("Poção de Vida", 1)
+        self.addItem("Poção de Vida", 2)
         self.addItem("Poção de Mana", 3)
 
 
@@ -40,31 +36,32 @@ class Mago(Heroi):
             "Ataque especial: Bola de Fogo (dano 45, custo 25 de mana)."
         )
 
-   
+
     def bolaDeFogo(self, alvo):
         """
         Lança uma bola de fogo no alvo:
-        - consome CUSTO_BOLA_DE_FOGO de mana
-        - causa DANO_BOLA_DE_FOGO de dano
-
-        Parâmetros:
-            alvo: instância de Personagem a receber o dano
+         - consome CUSTO_BOLA_DE_FOGO de mana
+         - causa DANO_BOLA_DE_FOGO de dano
         """
+        console = Utils.console
         if self.mana < Mago.CUSTO_BOLA_DE_FOGO:
-            print(f"{self.nome} não tem mana suficiente ({self.mana}/{Mago.CUSTO_BOLA_DE_FOGO}) para Bola de Fogo.")
+            console.print(
+                f"[red]{self.nome} não tem mana suficiente ({self.mana}/{Mago.CUSTO_BOLA_DE_FOGO})![/red]"
+            )
             return
 
         self.mana -= Mago.CUSTO_BOLA_DE_FOGO
-        alvo.receberDano(Mago.DANO_BOLA_DE_FOGO)
-        print(f"{self.nome} lançou Bola de Fogo em {alvo.nome}, causando {Mago.DANO_BOLA_DE_FOGO} de dano!")
-        print(f"Mana restante: {self.mana}/{Mago.MAX_MANA}")
+        dano = Mago.DANO_BOLA_DE_FOGO
+        alvo.receberDano(dano)
+
+        console.print(
+            f"[magenta]{self.nome} lançou Bola de Fogo em {alvo.nome}, causando {dano} de dano![/magenta]"
+        )
+        console.print(f"Mana restante: {self.mana}/{Mago.MAX_MANA}")
 
 
-    def ataqueEspecial(self, alvo) -> None:
+    def ataqueEspecial(self, alvo):
         """
-        Chama o método especial do mago (bolaDeFogo).
-
-        Parâmetros:
-            alvo: instância de Personagem a receber o dano
+        Override do Heroi: executa bolaDeFogo.
         """
         self.bolaDeFogo(alvo)

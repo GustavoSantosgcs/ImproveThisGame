@@ -77,6 +77,35 @@ class Vilao(Personagem):
         print(f'{self.nome} diz: "{fala}"')
 
 
+    def toDict(self):
+        """
+        Serializa o vilão para um dicionário JSON-friendly.
+        """
+        return {
+            "nome": self.nome,
+            "idade": self.idade,
+            "vida": self.vida,
+            "maldade": self.maldade,
+            "ataque": self.ataque,
+            "defesa": self.defesa
+        }
+
+
+    @classmethod
+    def fromDict(cls, data: dict) -> "Vilao":
+        """
+        Desserializa um dicionário em instância de Vilao.
+        """
+        return cls(
+            nome=data["nome"],
+            idade=data["idade"],
+            vida=data["vida"],
+            maldade=data["maldade"],
+            ataque=data.get("ataque", 25),
+            defesa=data.get("defesa", 10)
+        )
+
+
     def __str__(self):
         return (
             f"Vilão: {self.nome} | Maldade: {self.maldade} | "

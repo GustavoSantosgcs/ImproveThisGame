@@ -1,15 +1,74 @@
 [
-    {
-        "nome": "Arqueiro",
-        "idade": 42,
-        "vida": 85,
-        "mana": 110,
-        "ataque": 12,
-        "defesa": 6,
-        "inventario": {
-            "Poção de Vida": 2,
-            "Poção de Mana": 1
-        },
-        "historico": []
-    }
+  {
+    "nome": "Mago (default)",
+    "classe": "Mago",
+    "idade": 35,
+    "vida": 80,
+    "mana": 140,
+    "ataque": 15,
+    "defesa": 4,
+    "inventario": {
+      "Poção de Vida": 2,
+      "Poção de Mana": 3
+    },
+    "historico": []
+  },
+  {
+    "nome": "Ninja (default)",
+    "classe": "Ninja",
+    "idade": 28,
+    "vida": 0,
+    "mana": 30,
+    "ataque": 18,
+    "defesa": 6,
+    "inventario": {
+      "Poção de Vida": 2,
+      "Poção de Mana": 2
+    },
+    "historico": [
+      "Ninja (default) disse: Encontro: Goblin",
+      "Batalha: Ninja (default) vs Goblin",
+      "Ninja (default) fez especial em Goblin (30 PV)",
+      "Goblin básico em Ninja (default) (80 PV)",
+      "Ninja (default) fez especial em Goblin (0 PV)",
+      "Goblin derrotado turno 2",
+      "Ninja (default) disse: Encontro: Dragão",
+      "Batalha: Ninja (default) vs Dragão",
+      "Ninja (default) fez especial em Dragão (127 PV)",
+      "Dragão básico em Ninja (default) (80 PV)",
+      "Ninja (default) usou Poção de Mana",
+      "Dragão básico em Ninja (default) (44 PV)",
+      "Ninja (default) fez especial em Dragão (84 PV)",
+      "Dragão devastador em Ninja (default) (0 PV)",
+      "Ninja (default) derrotado turno 3"
+    ]
+  },
+  {
+    "nome": "Arqueiro (default)",
+    "classe": "Arqueiro",
+    "idade": 30,
+    "vida": 85,
+    "mana": 110,
+    "ataque": 12,
+    "defesa": 6,
+    "inventario": {
+      "Poção de Vida": 3,
+      "Poção de Mana": 1
+    },
+    "historico": []
+  },
+  {
+    "nome": "Guerreiro (default)",
+    "classe": "Guerreiro",
+    "idade": 40,
+    "vida": 130,
+    "mana": 60,
+    "ataque": 20,
+    "defesa": 12,
+    "inventario": {
+      "Poção de Vida": 3,
+      "Poção de Mana": 1
+    },
+    "historico": []
+  }
 ]
