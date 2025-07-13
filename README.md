@@ -9,56 +9,71 @@
 
 # **DESAFIO: Melhoria do Jogo de Personagens - POO em Python**
 
+
 ## **Descrição Atual**
-O repositório apresenta um jogo de combate em modo texto, agora refatorado com:
+Este repositório apresenta um jogo de combate em modo texto, já refatorado e ampliado com:
 
-- **POO completa:** classes `Personagem`, `Heroi`, `Vilao` e arquétipos (`Mago`, `Arqueiro`, `Ninja`, `Guerreiro`) em `ClassChar/`.  
-- **Sistema de batalha:** classe `Batalha` que gerencia turnos, usando `match` para ações e POO.  
-- **Fluxo principal:** classe `Jogo` em `main.py` que cria personagens e inicia batalhas.  
-
+- **Modelagem POO completa**: classes Personagem, Heroi, Vilao e arquétipos (Mago, Arqueiro, Ninja, Guerreiro) em `ClassChar/.
+- **Sistema de batalha**: classe Batalha gerencia turnos, usando match para escolhas e POO para lógica de combate.
+- **Fluxo principal em main.py**: classe Jogo gerencia criação, seleção, exclusão, listagem, modos de batalha (PvE e História) e visualização de inventário/histórico.
+- **Persistência**: arquivos JSON (`herois.json`, `viloes.json`) armazenam heróis com inventário e histórico, e vilões.
+---
 
 ## **Funcionalidades Implementadas**
 
-1. **Classes principais:**  
-   - `Personagem` (base genérica com `vida`, `ataque`, `defesa`, `curar()`, `receberDano()`).  
-   - `Heroi` (atributos de `mana`, métodos de poções: `usarPocaoVida()`, `usarPocaoMana()`, stub de `ataqueEspecial()`).  
-   - `Vilao` (níveis de maldade, `ataqueBasico()`, `ataqueSinistro()`, defesa customizada).  
-2. **Arquetipos em `ClassChar/`:**  
-   - `Mago`: `bolaDeFogo()`.  
-   - `Arqueiro`: `ataqueComFlecha()`.  
-   - `Ninja`: `ataqueSombrio()`, `tentarEsquivar()`.  
-   - `Guerreiro`: `golpeForte()`, bônus de defesa.  
-3. **Batalha (`batalha.py`):**  
-   - Loop de turnos até um personagem derrotar o outro.  
-   - `match` nas escolhas do herói.  
-   - Ações randômicas do vilão.  
-4. **Jogo (`main.py`):**  
-   - Classe `Jogo` encapsula criação de herói/vilão e fluxo de batalha.  
-   - Escolha de classe via `match`.  
-  
+1. **Personagens**
+   - **Personagem**: atributos genéricos (`nome`, `idade`, `vida`, `ataque`, `defesa`), métodos `curar()` e `receberDano()`.
+   - **Heroi**: adiciona mana, poções (`usarPocaoVida()`, `usarPocaoMana()`), `salvarRefem()`, `dialogar()`, inventario com `adicionarItem()`/`usarItem()`, serialização `toDict()`/`fromDict()`.
+   - **Vilao**: níveis de maldade, `ataqueBasico()`, `ataqueDevastador()`, `dialogar()`, serialização.
 
+2. **Arquétipos em `ClassChar/`**
+   - **Mago**: `bolaDeFogo()`, kit inicial de poções.
+   - **Arqueiro**: `flechadaDeFogo()`, flechas e poções.
+   - **Ninja**: `ataqueSombrio()`, chance de esquiva, poções.
+   - **Guerreiro**: `marretadaBruta()`, bônus de defesa, poções.
+
+3. **Batalha (`batalha.py`)**
+   - **Menu de ações:** 1) básico, 2) especial, 3) itens.
+   - **Histórico** de eventos registrado e anexado ao `heroi.historico`.
+
+4. **Itens (`itens.py`)**
+   - Item (base), `PocaoVida`, `PocaoMana`, `Voucher`.
+   - Uso durante a batalha via `heroi.usarItem()`.
+
+5. **Repositório (`repositorio.py`)**
+   - Garante diretório `repositorio/`.
+   - `salvarHerois()`/`carregarHerois()`: inventário e histórico incluídos.
+   - `salvarViloes()`/`carregarViloes()`: usa `toDict()`/`fromDict()`.
+
+6. **Aplicação (`main.py`)**
+   - Criação, seleção, exclusão, listagem de heróis/vilões.
+   - Modos **PvE** (seleção de herói e vilão) e **História** (duas fases com recompensas).
+   - Opção de visualizar inventário e histórico.
+
+---
 ## **Status das Tarefas**
 
 - ✔️ **Concluído**  
-  - Personagens com `nome`, `vida`, `ataque`, `defesa`.  
-  - `Heroi` herda `Personagem`, implementa `usarPocaoVida()` e `usarPocaoMana()`.  
-  - Batalha encapsulada em `Batalha`, usando `match` e POO.  
+  - Modelagem POO completa.  
+  - Sistema de poções e itens.  
+  - Batalhas com histórico.  
+  - Persistência via JSON.  
+  - Menu robusto em `main.py`.
 
-- ➖ **Pendente**  
-  - Método `salvarRefem()` na classe `Heroi`.  
-  - Método `dialogar()` para interações narrativas.  
-  - Estruturas de **listas** e **dicionários** para múltiplos heróis/vilões.  
-  - Registro de histórico de ações (log de batalha).  
-  - Integração de sistema de inventário e itens/vouchers.  
+- ➖ **Em Planejamento**   
+  - UI com cores e ASCII art.
 
+---
 ## **Estrutura do Projeto**
 ```text
 improve-this-game/
 ├── personagem.py
 ├── heroi.py
 ├── vilao.py
+├── itens.py
 ├── batalha.py
 ├── utils.py
+├── repositorio.py
 ├── main.py
 ├── README.md
 └── ClassChar/
@@ -82,14 +97,12 @@ improve-this-game/
    ```sh
    python main.py
    ```
-
+---
 ## **Proximas Melhorias**
 
 - **Diálogos e narrativa:** implementar dialogar() e eventos randômicos.
 
-- **Inventário e itens:** adicionar armas, poções especiais, vouchers.
-
-- **Registro de log:** histórico detalhado pós-batalha.
+- **Inventário e itens:** adicionar armas, poções especiais.
 
 - **Sistema de níveis:** experiência e upgrades de atributos.
 

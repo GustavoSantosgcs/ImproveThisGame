@@ -1,0 +1,15 @@
+[
+    {
+        "nome": "Arqueiro",
+        "idade": 42,
+        "vida": 85,
+        "mana": 110,
+        "ataque": 12,
+        "defesa": 6,
+        "inventario": {
+            "Poção de Vida": 2,
+            "Poção de Mana": 1
+        },
+        "historico": []
+    }
+]
