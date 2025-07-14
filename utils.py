@@ -54,7 +54,7 @@ class Utils:
     @staticmethod
     def escrever(texto: str, delay: float = 0.02):
         """
-        Imprime cada caractere de `texto` com um pequeno atraso,
+        Imprime cada caractere de 'texto' com um pequeno atraso,
         simulando uma máquina de escrever.
         """
         for c in texto:
